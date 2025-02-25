@@ -1,0 +1,8 @@
+# Ignore the soilSenseEnv directory
+soilSenseEnv/
+
+# Ignore environment variables file
+.env
+
+# Ignore Google Earth Engine credentials file
+ee-devdeepnarayan-60e430efcb57.json
