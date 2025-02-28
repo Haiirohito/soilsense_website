@@ -16,7 +16,7 @@ def convert_keys_to_strings(d):
         return d
 
 
-def save_calculations(geojson, indices):
-    indices = convert_keys_to_strings(indices)  # Convert all dictionary keys to strings
-    result = {"geojson": geojson, "indices": indices}
+def save_calculations(user_id, geojson, indices):
+    indices = convert_keys_to_strings(indices)
+    result = {"user_id": user_id, "geojson": geojson, "indices": indices}
     collection.insert_one(result)

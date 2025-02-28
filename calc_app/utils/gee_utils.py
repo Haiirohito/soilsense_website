@@ -64,7 +64,7 @@ def compute_indices(geojson, start_year, end_year):
         results = {}
 
         for year in range(start_year, end_year + 1):
-            # Load Sentinel-2 data for the specific year
+            # Load Sentinel-2 data
             s2_collection = (
                 ee.ImageCollection("COPERNICUS/S2_SR_HARMONIZED")
                 .filterBounds(geometry)
@@ -74,7 +74,7 @@ def compute_indices(geojson, start_year, end_year):
 
             s2 = s2_collection.median()
 
-            # Load Landsat-8 for LST calculation
+            # Load Landsat-8 data
             landsat_collection = (
                 ee.ImageCollection("LANDSAT/LC08/C02/T1_TOA")
                 .filterBounds(geometry)

@@ -1,32 +1,92 @@
+# from django.shortcuts import render
+# from django.http import JsonResponse
+# from django.views.decorators.csrf import csrf_exempt
+
+# from .forms import GeoJSONUploadForm
+# from .utils.gee_utils import compute_indices
+# from .models import save_calculations
+
+# import json
+# import base64
+# import logging
+# import traceback
+# import matplotlib.pyplot as plt
+
+# from io import BytesIO
+
+# logging.basicConfig(level=logging.INFO)
+
+
+# def index(request):
+#     """Renders the upload page with the form."""
+#     return render(request, "calc_app/new_calculation.html", {"upload_form": GeoJSONUploadForm()})
+
+
+import jwt
+import os
+import json
+import logging
+import traceback
+import base64
+import matplotlib
+
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
+
+
 from django.shortcuts import render
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from io import BytesIO
+from dotenv import load_dotenv
 
 from .forms import GeoJSONUploadForm
 from .utils.gee_utils import compute_indices
 from .models import save_calculations
 
-import json
-import base64
-import logging
-import traceback
-import matplotlib.pyplot as plt
-
-from io import BytesIO
-
 logging.basicConfig(level=logging.INFO)
+
+load_dotenv()
+
+secret_key = os.getenv("SECRET_KEY")
 
 
 def index(request):
-    """Renders the upload page with the form."""
-    return render(request, "calc_app/new_calculation.html", {"upload_form": GeoJSONUploadForm()})
+    """Renders the upload page with the form and extracts the username from JWT token."""
+    token = request.GET.get("token")
+    username = "Guest"
+    user_id = "Guest_id"
+
+    if token:
+        try:
+            decoded_token = jwt.decode(token, secret_key, algorithms=["HS256"])
+            username = decoded_token.get("username", "Guest")
+            user_id = decoded_token.get("user_id", "Guest_id")
+
+            # Store user_id in the session
+            request.session["user_id"] = user_id
+
+        except jwt.ExpiredSignatureError:
+            username = "Session Expired"
+        except jwt.InvalidTokenError:
+            username = "Invalid Token"
+
+    return render(
+        request,
+        "calc_app/new_calculation.html",
+        {"upload_form": GeoJSONUploadForm(), "username": username, "user_id": user_id},
+    )
 
 
 @csrf_exempt
 def compute_indices_view(request):
     """Receives GeoJSON input, year range, and computes indices."""
+
     if request.method == "POST":
         try:
+            user_id = request.POST.get("user_id")
+            print("User ID from POST:", user_id)
+
             geojson = None
             start_year = int(request.POST.get("start_year", 2024))
             end_year = int(request.POST.get("end_year", 2024))
@@ -47,7 +107,7 @@ def compute_indices_view(request):
             for year in range(start_year, end_year + 1):
                 results[year] = compute_indices(geojson, year, year)
 
-            save_calculations(geojson, results)
+            save_calculations(user_id, geojson, results)
             graph_urls = generate_all_graphs(results)
             return JsonResponse({"results": results, "graphs": graph_urls}, status=200)
 

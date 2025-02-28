@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -10,30 +11,77 @@
     <style>
         body {
             font-family: 'Poppins', sans-serif;
-            background-color: #f4f6f9;
+            background-color: #F5F5F5;
             margin: 0;
             padding: 0;
             display: flex;
-            color: #333;
+            color: #333333;
         }
 
         .navbar {
             width: 250px;
-            background: #007bff;
-            color: white;
+            background: #4A6B57;
+            color: #F5F5F5;
             padding: 20px;
-            height: 100vh;
+            min-height: 100vh;
             position: fixed;
             left: 0;
             top: 0;
             box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            box-sizing: border-box;
         }
 
         .navbar h1 {
-            margin-bottom: 20px;
             font-size: 24px;
             font-weight: 600;
             text-align: center;
+            width: 100%;
+            color: #F5F5F5;
+        }
+
+        .profile-section {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .profile-picture {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #F5F5F5;
+        }
+
+        .navbar h2 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 500;
+            color: #F5F5F5;
+        }
+
+        .navbar .logout-button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 6px;
+            border: none;
+            background-color: #5A7F6B;
+            color: #F5F5F5;
+            cursor: pointer;
+            transition: 0.3s;
+            text-align: center;
+            margin-top: auto;
+        }
+
+        .navbar .logout-button:hover {
+            background-color: #4A6B57;
+
         }
 
         .container {
@@ -42,22 +90,19 @@
             width: calc(100% - 270px);
         }
 
-        .form-container {
-            background: white;
-            width: calc(100% - 20px);
+        .form-container,
+        .card {
+            background: #6A8D73;
             padding: 20px;
             border-radius: 12px;
-            border: 1px solid #ccc;
+            border: 1px solid #5A7F6B;
             box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
             margin-bottom: 20px;
-            margin-left: 10px;
-            box-sizing: border-box;
         }
 
-        .form-container h1 {
-            font-size: 22px;
-            margin-bottom: 20px;
-            color: #007bff;
+        .form-container h1,
+        .card h3 {
+            color: #F5F5F5;
         }
 
         input,
@@ -66,28 +111,51 @@
             padding: 10px;
             font-size: 16px;
             border-radius: 6px;
-            border: 1px solid #ccc;
+            border: 1px solid #5A7F6B;
             margin-top: 10px;
             width: 100%;
+            background: #F5F5F5;
+            color: #333333;
             box-sizing: border-box;
         }
 
         button {
-            background-color: #007bff;
-            color: white;
+            background-color: #5A7F6B;
+            color: #F5F5F5;
             cursor: pointer;
-            transition: 0.3s;
             border: none;
         }
 
         button:hover {
-            background-color: #0056b3;
+            background-color: #4A6B57;
+        }
+
+        .graph-container img {
+            width: 100%;
+            height: auto;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .dropdown-header {
+            background-color: #5A7F6B;
+            color: #F5F5F5;
+            padding: 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .dropdown-header:hover {
+            background-color: #4A6B57;
         }
 
         .content {
             display: flex;
             gap: 20px;
             flex-wrap: wrap;
+            margin-top: 20px;
         }
 
         .card-container {
@@ -98,71 +166,18 @@
             width: 55%;
         }
 
-        .card {
-            background: white;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
-            margin-bottom: 20px;
-        }
-
-        .card h3 {
-            font-size: 18px;
-            margin-bottom: 15px;
-            color: #007bff;
-        }
-
-        .card p {
-            margin: 10px 0;
-            font-size: 14px;
-        }
-
-        .graph-container {
-            width: 100%;
-            max-width: 500px;
-            margin-left: 10px;
-            box-sizing: border-box;
-        }
-
-        .graph-container img {
-            width: 100%;
-            height: auto;
-            border-radius: 12px;
-            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2);
-            margin-bottom: 10px;
-        }
-
-        .low {
-            color: #ff4d4d;
-            /* Red for low values */
-        }
-
-        .moderate {
-            color: #ffcc00;
-            /* Yellow for moderate values */
-        }
-
-        .high {
-            color: #33cc33;
-            /* Green for high values */
-        }
-
-        .very-high {
-            color: #0066cc;
-            /* Blue for very high values */
-        }
-
         .graph-selector {
-            width: calc(100% - 20px);
+            width: 100%;
             padding: 10px;
             font-size: 16px;
             border-radius: 6px;
-            border: 1px solid #ccc;
-            margin: 0 10px 20px 10px;
-            /* Add equal margin on all sides */
-            display: none;
+            border: 1px solid #5A7F6B;
+            margin-top: 0px;
+            margin-bottom: 20px;
+            background: #F5F5F5;
+            color: #333333;
             box-sizing: border-box;
-            /* Ensure padding is included in the width */
+            display: none;
         }
 
         .graph-selector option {
@@ -170,48 +185,36 @@
         }
 
         .dropdown {
-            margin: 0 10px 10px 10px;
-            /* Add equal margin on all sides */
-            width: calc(100% - 20px);
-            /* Adjust width to account for padding */
-            box-sizing: border-box;
-            /* Ensure padding is included in the width */
+            margin-bottom: 20px;
         }
 
         .dropdown-header {
-            background-color: #007bff;
-            color: white;
+            background-color: #5A7F6B;
+            color: #F5F5F5;
             padding: 10px;
             border-radius: 6px;
             cursor: pointer;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            width: 100%;
-            /* Ensure header takes full width */
-            box-sizing: border-box;
-            /* Ensure padding is included in the width */
         }
 
         .dropdown-header:hover {
-            background-color: #0056b3;
+            background-color: #4A6B57;
         }
 
         .dropdown-content {
             display: none;
             padding: 10px;
-            background-color: #f9f9f9;
-            border: 1px solid #ddd;
+            background-color: #F5F5F5;
+            border: 1px solid #5A7F6B;
             border-radius: 6px;
             margin-top: 5px;
-            width: 100%;
-            /* Ensure content takes full width */
-            box-sizing: border-box;
-            /* Ensure padding is included in the width */
         }
 
         .dropdown-content p {
             margin: 5px 0;
+            color: #333333;
         }
     </style>
 </head>
@@ -219,12 +222,18 @@
 <body>
     <div class="navbar">
         <h1>SoilSense</h1>
+        <div class="profile-section">
+            <img src="{% static 'user.jpg' %}" alt="Profile Picture" class="profile-picture">
+            <h2>{{ username }}</h2>
+        </div>
+        <a href="{% url 'auth_app:user_logout' %}" class="logout-button">Logout</a>
     </div>
     <div class="container">
         <div class="form-container">
             <h1>Land Calculation</h1>
             <form method="post" enctype="multipart/form-data" id="calc-form">
                 {% csrf_token %}
+                <input type="hidden" name="user_id" value="{{ user_id }}">
                 {{ upload_form.as_p }}
                 <label for="start_year">Start Year:</label>
                 <input type="number" id="start_year" name="start_year" value="2024" required>
@@ -233,6 +242,7 @@
                 <button type="submit">Calculate</button>
             </form>
         </div>
+
         <div class="content">
             <div class="card-container" id="results"></div>
             <div class="graph-section">
@@ -241,6 +251,8 @@
             </div>
         </div>
     </div>
+
+
 
     <script>
         document.getElementById("calc-form").onsubmit = async function (event) {
@@ -301,7 +313,7 @@
                 graphSelector.innerHTML = "";
 
                 if (result.graphs) {
-                    graphSelector.style.display = "block";
+                    graphSelector.style.display = "block"; // Show the dropdown
                     for (const [index, graphUrl] of Object.entries(result.graphs)) {
                         let option = document.createElement("option");
                         option.value = graphUrl;
